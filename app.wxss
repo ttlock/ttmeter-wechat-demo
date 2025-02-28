@@ -1,0 +1,25 @@
+.wrapper {
+	padding: calc(12px + env(safe-area-inset-top)) 12px 32px;
+}
+.line {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.line-cell {
+	width: 50%;
+	padding: 0 6px;
+	box-sizing: border-box;
+}
+.line-block {
+	width: 100%;
+}
+.btn {
+    font-size: 14px;
+	margin: 0.5em auto 0.5em 0;
+}
+.view {
+    font-size: 14px;
+	padding: 4px 12px;
+}

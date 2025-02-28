@@ -1,0 +1,5 @@
+{
+	"usingComponents": {
+		"ttmeter-elec": "plugin://ttmeter-plugin/ttmeter-elec"
+	}
+}

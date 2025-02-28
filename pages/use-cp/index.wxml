@@ -1,0 +1,27 @@
+<view class="wrapper">
+	<view class="line">
+		<view class="line-cell line-block"><button class="btn block-btn" bindtap="handleToUseRequire">使用requirePlugin调用</button></view>
+	</view>
+	<view class="line">
+		<view class="line-cell line-block"><button class="btn" bindtap="setElecMeterEg">完整流程示例</button></view>
+	</view>
+	<view class="line">
+		<view class="line-cell"><button class="btn" bindtap="scan">扫描设备</button></view>
+		<view class="line-cell"><button class="btn" bindtap="connect">连接设备</button></view>
+		<view class="line-cell"><button class="btn" bindtap="syncElecMeterState">抄表</button></view>
+		<view class="line-cell"><button class="btn" bindtap="chargeElecMeter">充值</button></view>
+		<view class="line-cell"><button class="btn" bindtap="setElecMeter">设置电量</button></view>
+		<view class="line-cell"><button class="btn" bindtap="disconnect">结束操作</button></view>
+		<view class="line-cell"><button class="btn" bindtap="handleChangeLog">切换日志输出</button></view>
+	</view>
+	<view class="view"><text>最后一次错误码：{{errCode}}</text></view>
+	<view class="view"><text>{{errMsg}}</text></view>
+</view>
+
+
+<ttmeter-elec log="{{log}}" id="ELECMETER"
+    bind:ready="handleReady"
+    bind:info="_showLog"
+    bind:disconnect="_onBLEDisconnectStateChange"
+    bind:changeNetwork="_onNetworkWeakChange"
+    bind:changeBleAdapter="_onBluetoothAdapterStateChange"></ttmeter-elec>
