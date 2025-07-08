@@ -1,0 +1,84 @@
+<!--pages/water-meter/detail/index.wxml-->
+<i-message id="IMessage"></i-message>
+<view class="wrapper">
+    <view class="view" wx:if="{{((meterId > 0) || !!mac) && !!meterInfo}}">
+        <view class="view">工作模式: {{meterInfo.payMode == 0 ? "计能模式" : "预付费模式" }} 特征值：{{meterInfo.featureValue || "--"}}</view>
+        <view class="view">剩余水量：{{meterInfo.remainderM3 || 0 }}t 总用水量：{{meterInfo.totalM3 || 0 }}t</view>
+        <view class="view">水费单价: {{meterInfo.price || 0 }}元/t</view>
+        <view class="view">通水状态: {{meterInfo.onOff == 1 ? "通水" : (meterInfo.onOff == 0 ? "断水" : "--") }}</view>
+    </view>
+	<view class="line">
+        <view class="line-cell"><button class="btn" bindtap="handleLogout">切换账号</button></view>
+        <view class="line-cell"><button class="btn" bindtap="handleChangeLog">{{ log ? "关闭" : "开启" }}日志输出</button></view>
+	</view>
+    <view class="line">
+		<view class="line-cell"><button class="btn" bindtap="stopAllOperations">中断操作</button></view>
+        <view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="DeleteMeter">删除水表</button></view>
+    </view>
+    <view class="line">
+		<view class="line-cell"><button class="btn" bindtap="syncWaterMeterState">抄表</button></view>
+		<view class="line-cell" wx:if="{{!!meterInfo && meterInfo.payMode == 1}}"><button class="btn" bindtap="toChargeMeter">水量充值</button></view>
+	</view>
+	<view class="line" wx:if="{{!!meterInfo}}">
+        <view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="toSetWaterMeter">设置剩余水量</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="clearWaterMeter">清空剩余水量</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="setWaterOnOff">{{meterInfo.onOff == 1 ? "断水" : "通水"}}</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="configWorkMode">切换{{meterInfo.payMode == 0 ? "预付费模式" : "计能模式" }}</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="toSetTotalUsage">设置总用水量</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="getFeatureValue">查询特征值</button></view>
+	</view>
+	<view class="view"><text>最后一次错误码：{{errCode}}</text></view>
+	<view class="view"><text>{{errMsg}}</text></view>
+    <view class="form" wx:if="{{showInput}}">
+        <form bindsubmit="handleSubmit">
+            <view wx:if="{{showInput === 1}}">
+                <view class="form-item" >
+                    <text class="form-item-label">设置总用水量(取值范围: 1-99999)</text>
+                    <input class="input" model:value="{{totalM3}}"
+                        placeholder="请输入总用水量(单位：t)"
+                        name="totalM3"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="TOTAL_M3">设置总用水量</button>
+                </view>
+            </view>
+            <view wx:if="{{showInput === 2}}">
+                <view class="form-item">
+                    <text class="form-item-label">请输入租客充值token(可向管理员申请)</text>
+                    <input class="input" model:value="{{executeToken}}"
+                        placeholder="请输入租客充值token"
+                        name="executeToken"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="TENANT_RECHARGE">租客充值</button>
+                </view>
+            </view>
+            <view wx:if="{{showInput === 3}}">
+                <view class="form-item">
+                    <text class="form-item-label">设置剩余水量(取值范围1-99999)</text>
+                    <input class="input" model:value="{{remainderM3}}"
+                        placeholder="请输入剩余水量(t)"
+                        name="remainderM3"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="REMAINDER_M3">设置剩余水量</button>
+                </view>
+            </view>
+            <view wx:if="{{showInput === 4}}">
+                <view class="form-item">
+                    <text class="form-item-label">充值水量(取值范围1-999)</text>
+                    <input class="input" model:value="{{rechargeM3}}"
+                        placeholder="请输入待充值水量(t)"
+                        name="rechargeM3"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="RECHARGE_M3">管理员充值</button>
+                </view>
+            </view>
+        </form>
+    </view>
+</view>

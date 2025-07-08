@@ -1,0 +1,32 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "ES5",
+        "module": "ESNext",
+        "lib": [
+            "ESNext",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ],
+        "allowJs": true,
+        "jsx": "preserve",
+        "outDir": "./dist",
+        "importHelpers": true,
+        "strict": false,
+        "moduleResolution": "node",
+        "baseUrl": "./",
+        "paths": {},
+        "typeRoots": [],
+        "types": ["./doc/typings"],
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true
+    },
+    "include": [
+        "miniprogram/**/*.ts",
+        "typings/**/*.d.ts", "miniprogram/mixins/lodash.js",
+    ]
+}

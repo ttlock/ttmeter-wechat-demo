@@ -1,0 +1,19 @@
+<!--pages/electric-meter/list/index.wxml-->
+<i-message id="IMessage"></i-message>
+<view class="wrapper">
+    <view class="line">
+        <view class="line-cell"><button class="btn" bindtap="handleToUseComponent">管理智能水表</button></view>
+        <view class="line-cell"><button class="btn" bindtap="handleLogout">切换账号</button></view>
+    </view>
+    <view class="line">
+        <view class="line-cell line-block"><button class="btn" bindtap="handleToInit">添加智能电表</button></view>
+	</view>
+    <view wx:for="{{deviceList || []}}" wx:key="electricMeterId"
+        class="device-item"
+        hover-class="device-item-active"
+        data-item="{{item}}"
+        bindtap="toDetail">
+        <view>{{item.name}}</view>
+    </view>
+    <view class="view" wx:if="{{isEmpty}}">该账号下未绑定智能电表</view>
+</view>

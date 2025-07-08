@@ -1,0 +1,24 @@
+<i-message id="IMessage"></i-message>
+<view class="form">
+    <form bindsubmit="handleSubmit">
+        <view class="form-item">
+            <text class="form-item-label">账号</text>
+            <input class="input" model:value="{{username}}"
+                placeholder="请输入通通锁管理员用户登录账号"
+                name="username"
+                bindinput="handleInputEmpty"></input>
+        </view>
+        <view class="form-item">
+            <text class="form-item-label">密码</text>
+            <input class="input" model:value="{{password}}"
+                password="true"
+                placeholder="请输入登录密码"
+                name="password"
+                bindinput="handleInputEmpty"></input>
+        </view>
+        <view class="form-item">
+            <button class="btn" hover-class="btn-hover" form-type="submit" data-target="ADMIN">管理员登录</button>
+        </view>
+    </form>
+</view>
+

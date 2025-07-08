@@ -1,0 +1,15 @@
+<!--miniprogram/pages/login/login.wxml-->
+<i-message id="IMessage"></i-message>
+<view class="form">
+    <view class="form-item">
+        <button class="btn" hover-class="btn-hover" bind:tap="handleLogin" data-target="ADMIN">管理员登录</button>
+        <button class="btn" hover-class="btn-hover" bind:tap="handleLogin" data-target="TENANT">租客身份进入</button>
+    </view>
+    <view class="form-item">
+        该demo仅用于展示通通水电表微信小程序插件使用方法，使用时基础库版本请设置在3.5.7及其以上
+    </view>
+    <view class="form-item">
+        适用插件版本：1.0.0及其以上
+    </view>
+</view>
+

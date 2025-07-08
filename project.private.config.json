@@ -3,7 +3,22 @@
     "projectname": "ttmeter-wechat-demo",
     "setting": {
         "compileHotReLoad": true,
-        "skylineRenderEnable": false
+        "skylineRenderEnable": false,
+        "urlCheck": false,
+        "bigPackageSizeSupport": false
     },
-    "libVersion": "3.5.8"
+    "libVersion": "3.5.8",
+    "condition": {
+        "miniprogram": {
+            "list": [
+                {
+                    "name": "pages/electric-meter/list/index",
+                    "pathName": "pages/electric-meter/detail/index",
+                    "query": "",
+                    "scene": null,
+                    "launchMode": "default"
+                }
+            ]
+        }
+    }
 }

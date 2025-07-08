@@ -1,0 +1,18 @@
+<!--miniprogram/pages/login/login.wxml-->
+<i-message id="IMessage"></i-message>
+<view class="form">
+    <form bindsubmit="handleSubmit">
+        <view class="form-item">
+            <text class="form-item-label">MAC地址</text>
+            <input class="input" model:value="{{MAC}}"
+                placeholder="请输入智能设备MAC地址 (电表或水表)"
+                name="MAC"
+                bindinput="handleInputEmpty"></input>
+        </view>
+        <view class="form-item">
+            <button class="btn" hover-class="btn-hover" form-type="submit" data-target="ELECTRIC_METER">电表管理</button>
+            <button class="btn" hover-class="btn-hover" form-type="submit" data-target="WATER_METER">水表管理</button>
+        </view>
+    </form>
+</view>
+

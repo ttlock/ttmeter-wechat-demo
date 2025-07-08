@@ -1,0 +1,29 @@
+{
+    "pages": [
+        "pages/user/home/index",
+        "pages/login/login",
+        "pages/electric/index",
+        "pages/water/index",
+        "pages/electric-list/index",
+        "pages/water-list/index",
+        "pages/user/admin/index",
+        "pages/user/tenant/index",
+        "pages/electric-meter/list/index",
+        "pages/electric-meter/detail/index",
+        "pages/water-meter/detail/index",
+        "pages/water-meter/list/index",
+        "pages/electric-meter/init/index",
+        "pages/water-meter/init/index"
+    ],
+    "usingComponents": {
+        "i-message": "components/message/index"
+    },
+    "plugins": {
+        "ttmeter-plugin": {
+            "version": "1.0.0",
+            "provider": "wxeb890b790ae1ab8f"
+        }
+    },
+    "sitemapLocation": "sitemap.json",
+    "lazyCodeLoading": "requiredComponents"
+}

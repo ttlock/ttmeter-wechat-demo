@@ -1,0 +1,1 @@
+/// <reference path="./api/index.d.ts" />

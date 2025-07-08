@@ -1,21 +1,33 @@
 {
     "libVersion": "latest",
-    "appid": "wxeb890b790ae1ab8f",
     "compileType": "miniprogram",
+    "miniprogramRoot": "miniprogram/",
     "packOptions": {
         "ignore": [],
         "include": []
     },
     "setting": {
+        "lazyloadPlaceholderEnable": true,
         "babelSetting": {
             "ignore": [],
             "disablePlugins": [],
             "outputPath": ""
-        }
+        },
+        "useCompilerPlugins": [
+            "typescript",
+            "less",
+            "sass"
+        ],
+        "es6": true,
+        "enhance": true,
+        "uglifyFileName": false,
+        "minified": true,
+        "postcss": true
     },
     "condition": {},
     "editorSetting": {
         "tabIndent": "insertSpaces",
         "tabSize": 4
-    }
+    },
+    "srcMiniprogramRoot": "miniprogram/"
 }

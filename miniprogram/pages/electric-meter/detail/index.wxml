@@ -1,0 +1,84 @@
+<!--pages/electric-meter/detail/index.wxml-->
+<i-message id="IMessage"></i-message>
+<view class="wrapper">
+    <view class="view" wx:if="{{((meterId > 0) || !!mac) && !!meterInfo}}">
+        <view class="view">工作模式: {{meterInfo.payMode == 0 ? "计能模式" : "预付费模式" }}  特征值：{{meterInfo.featureValue || "--"}}</view>
+        <view class="view">{{meterInfo.payMode == 1 ? "剩余电量" : "总用电量"}}: {{(meterInfo.payMode == 1 ? meterInfo.remainderKwh : meterInfo.totalKwh) || 0 }}kwh</view>
+        <view class="view">电费单价: {{meterInfo.price || 0 }}元/kwh 最大功率：{{meterInfo.maxPower || 0}}kw</view>
+        <view class="view">通电状态: {{meterInfo.onOff == 1 ? "通电" : (meterInfo.onOff == 0 ? "断电" : "--") }}</view>
+    </view>
+    <view class="line">
+        <view class="line-cell"><button class="btn" bindtap="handleLogout">切换账号</button></view>
+        <view class="line-cell"><button class="btn" bindtap="handleChangeLog">{{ log ? "关闭" : "开启" }}日志输出</button></view>
+	</view>
+	<view class="line">
+		<view class="line-cell"><button class="btn" bindtap="stopAllOperations">中断操作</button></view>
+        <view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="DeleteMeter">删除电表</button></view>
+    </view>
+    <view class="line">
+		<view class="line-cell"><button class="btn" bindtap="syncElecMeterState">抄表</button></view>
+		<view class="line-cell" wx:if="{{!!meterInfo && meterInfo.payMode == 1}}"><button class="btn" bindtap="toChargeMeter">电量充值</button></view>
+	</view>
+    <view class="line" wx:if="{{!!meterInfo}}">
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="toSetElecMeter">设置剩余电量</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="clearElecMeter">清空剩余电量</button></view>
+        <view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="setPowerOnOff">{{meterInfo.onOff == 1 ? "断电" : "通电"}}</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="configWorkMode">切换{{meterInfo.payMode == 0 ? "预付费模式" : "计能模式" }}</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="toSetMaxPower">功率设置</button></view>
+		<view class="line-cell" wx:if="{{meterId > 0}}"><button class="btn" bindtap="getFeatureValue">查询特征值</button></view>
+	</view>
+	<view class="view"><text>最后一次错误码：{{errCode}}</text></view>
+	<view class="view"><text>{{errMsg}}</text></view>
+    <view class="form" wx:if="{{showInput}}">
+        <form bindsubmit="handleSubmit">
+            <view wx:if="{{showInput === 1 ? true : false}}">
+                <view class="form-item">
+                    <text class="form-item-label">设置功率阈值(取值范围1-255)</text>
+                    <input class="input" model:value="{{maxPower}}"
+                        placeholder="请输入最大功率阈值(kw)"
+                        name="maxPower"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="MAX_POWER">设置功率阈值</button>
+                </view>
+            </view>
+            <view wx:if="{{showInput === 2}}">
+                <view class="form-item">
+                    <text class="form-item-label">请输入租客充值token(可向管理员申请)</text>
+                    <input class="input" model:value="{{executeToken}}"
+                        placeholder="请输入租客充值token"
+                        name="executeToken"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="TENANT_RECHARGE">租客充值</button>
+                </view>
+            </view>
+            <view wx:if="{{showInput === 3}}">
+                <view class="form-item">
+                    <text class="form-item-label">设置剩余电量(取值范围1-99999)</text>
+                    <input class="input" model:value="{{remainderKwh}}"
+                        placeholder="请输入剩余电量(kwh)"
+                        name="remainderKwh"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="REMAINDER_KWH">设置剩余电量</button>
+                </view>
+            </view>
+            <view wx:if="{{showInput === 4}}">
+                <view class="form-item">
+                    <text class="form-item-label">充值电量(取值范围1-999)</text>
+                    <input class="input" model:value="{{rechargeKwh}}"
+                        placeholder="请输入待充值电量(kwh)"
+                        name="rechargeKwh"
+                        bindinput="handleInputEmpty"></input>
+                </view>
+                <view class="form-item">
+                    <button class="btn" hover-class="btn-hover" form-type="submit" data-target="RECHARGE_KWH">管理员充值</button>
+                </view>
+            </view>
+        </form>
+    </view>
+</view>

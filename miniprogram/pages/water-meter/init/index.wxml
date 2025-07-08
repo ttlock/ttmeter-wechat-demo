@@ -1,0 +1,35 @@
+<!--pages/water-meter/init/index.wxml-->
+<i-message id="IMessage"></i-message>
+<view class="wrapper">
+	<view class="line">
+		<view class="line-cell"><button class="btn" disabled="{{!isEnable}}" bindtap="startScan">扫描设备</button></view>
+		<view class="line-cell"><button class="btn" disabled="{{!isEnable}}" bindtap="stopScan">停止扫描</button></view>
+		<view class="line-cell"><button class="btn" disabled="{{!isEnable}}" bindtap="stopAllOperations">中断操作</button></view>
+		<view class="line-cell"><button class="btn" disabled="{{!isEnable}}" bindtap="handleChangeLog">{{ log ? "关闭" : "开启" }}日志输出</button></view>
+	</view>
+	<view class="view"><text>最后一次错误码：{{errCode}}</text></view>
+	<view class="view"><text>{{errMsg}}</text></view>
+	<view  wx:for="{{deviceList}}" wx:key="mac"
+		class="device-item {{item.isInited ? 'disabled' : ''}}"
+		hover-class="device-item-active"
+		data-item="{{item}}"
+		bindtap="toInit">
+		<view>{{item.name}}</view>
+		<view>{{item.RSSI}}</view>
+	</view>
+</view>
+<view class="form" wx:if="{{showInput}}">
+    <form bindsubmit="handleSubmit">
+        <view class="form-item">
+            <text class="form-item-label">请设置单价(取值范围1-99999999)</text>
+            <input class="input" model:value="{{price}}"
+                placeholder="请输入水费单价(元/t)"
+                name="price"
+                bindinput="handleInputEmpty"></input>
+        </view>
+        <view class="form-item">
+            <button class="btn" hover-class="btn-hover" form-type="submit">添加水表</button>
+        </view>
+    </form>
+</view>
+
