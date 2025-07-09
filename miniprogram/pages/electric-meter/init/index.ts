@@ -173,7 +173,7 @@ Page({
     /** 点击添加蓝牙智能电表 */
     toInit: async function (event) {
         const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
-        const deviceInfo = JSON.parse(JSON.stringify(event?.target?.dataset?.item)) as TTElectricMeter.DeviceModel;
+        const deviceInfo = JSON.parse(JSON.stringify(event?.currentTarget?.dataset?.item || "{}")) as TTElectricMeter.DeviceModel;
 		if (typeof deviceInfo?.isInited != "boolean") return;
 		else if (deviceInfo.isInited) return wx.showModal({ content: '蓝牙电表已被添加，请先删除', showCancel: false });
 		try {

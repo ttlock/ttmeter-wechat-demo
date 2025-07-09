@@ -62,7 +62,7 @@ Page({
     },
     /** 跳转智能水表详情 */
 	_toDetail (event) {
-        const deviceInfo = event?.target?.dataset?.item as IWaterMeter.List.WaterMeterInfo;
+        const deviceInfo = event?.currentTarget?.dataset?.item as IWaterMeter.List.WaterMeterInfo;
 		wx.navigateTo({ url: `../detail/index?id=${deviceInfo?.waterMeterId}` })
     },
     /** 跳转添加智能水表 */

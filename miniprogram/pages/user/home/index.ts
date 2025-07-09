@@ -13,7 +13,7 @@ Page({
     
     /** 执行跳转 */
     _handleLogin(event) {
-        const target = event?.target?.dataset?.target as string;
+        const target = event?.currentTarget?.dataset?.target as string;
         if (target == "TENANT") wx.navigateTo({ url: "../tenant/index"}); // 跳转租客身份进入
         else if (target == "ADMIN") {
             const accessToken =  Crypto.AES_Decrypt(wx.getStorageSync("access_token") || "");

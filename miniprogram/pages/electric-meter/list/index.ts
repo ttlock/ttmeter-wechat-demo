@@ -61,7 +61,7 @@ Page({
     },
     /** 跳转智能电表详情 */
 	_toDetail (event) {
-        const deviceInfo = event?.target?.dataset?.item as IElectricMeter.List.ElemeterMeterInfo;
+        const deviceInfo = event?.currentTarget?.dataset?.item as IElectricMeter.List.ElemeterMeterInfo;
 		wx.navigateTo({ url: `../detail/index?id=${deviceInfo?.electricMeterId}` })
     },
     /** 跳转添加智能电表 */
