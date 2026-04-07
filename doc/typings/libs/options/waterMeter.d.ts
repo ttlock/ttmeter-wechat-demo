@@ -12,41 +12,41 @@ declare namespace TTWaterMeter {
 	 */
 	interface DeviceModel extends TTMeter.DeviceModel {
 		/**
-		 * @description Water meter power status
+		 * @description Water meter power status, invalid on Protocol Version 2
 		 * @since 0.0.4
 		 * @value 0 -Power off, 1 -Power on
 		 */
 		onOff?: number;
 		/**
-		 * @description Magnetic interference
+		 * @description Magnetic interference, invalid on Protocol Version 2
 		 * @since 0.0.4
 		 * @value 0 -No magnetic interference, 1 -Magnetic interference
 		 */
 		magneticInterference?: number;
 		/**
-		 * @description Water valve malfunction
+		 * @description Water valve malfunction, invalid on Protocol Version 2
 		 * @since 0.0.4
 		 * @value 0 -No water valve malfunction, 1 -Water valve malfunction
 		 */
 		waterValveFailure?: number;
 		/**
-		 * @description Water meter payment mode
+		 * @description Water meter payment mode, invalid on Protocol Version 2
 		 * @since 0.0.4
 		 * @value 0 -Postpaid mode, 1 -Prepaid mode
 		 */
 		payMode?: number;
 		/**
-		 * @description Total water consumption, unit: t
+		 * @description Total water consumption, unit: t, invalid on Protocol Version 2
 		 * @since 0.0.4
 		 */
 		totalM3?: string;
 		/**
-		 * @description Remaining water consumption, unit: t
+		 * @description Remaining water consumption, unit: t, invalid on Protocol Version 2
 		 * @since 0.0.4
 		 */
 		remainderM3?: string;
 		/**
-		 * @description Electric quantity, 1 - 100
+		 * @description Electric quantity, 1 - 100, invalid on Protocol Version 2
 		 * @since 0.0.4
 		 */
 		electricQuantity?: number;

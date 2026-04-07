@@ -12,34 +12,34 @@ declare namespace TTElectricMeter {
 	 */
 	interface DeviceModel extends TTMeter.DeviceModel {
 		/**
-		 * @description Electric meter power status
+		 * @description Electric meter power status, invalid on Protocol Version 2
 		 * @since 0.0.3
 		 * @value 0 -Power off, 1 -Power on
 		 */
 		onOff?: number;
 		/**
-		 * @description Electric meter payment mode
+		 * @description Electric meter payment mode, invalid on Protocol Version 2
 		 * @since 0.0.3
 		 * @value 0 -Postpaid mode, 1 -Prepaid mode
 		 */
 		payMode?: number;
 		/**
-		 * @description Total electricity consumption, unit: kWh
+		 * @description Total electricity consumption, unit: kWh, invalid on Protocol Version 2
 		 * @since 0.0.3
 		 */
 		totalKwh?: string;
 		/**
-		 * @description Remaining electricity consumption, unit: kWh
+		 * @description Remaining electricity consumption, unit: kWh, invalid on Protocol Version 2
 		 * @since 0.0.3
 		 */
 		remainderKwh?: string;
 		/**
-		 * @description Electric meter voltage, unit: V
+		 * @description Electric meter voltage, unit: V, invalid on Protocol Version 2
 		 * @since 0.0.3
 		 */
 		voltage?: string;
 		/**
-		 * @description Electric meter current, unit: A
+		 * @description Electric meter current, unit: A, invalid on Protocol Version 2
 		 * @since 0.0.3
 		 */
 		electricCurrent?: number;

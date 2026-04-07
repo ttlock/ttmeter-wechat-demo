@@ -106,6 +106,16 @@ declare namespace TTMeter {
 		 * @since 0.0.3
 		 */
 		scanTime?: number;
+        /**
+		 * @description Protocol version number, 1 - Version 1, 2 - Version 2
+		 * @since 1.1.0
+		 */
+		type?: number;
+		/**
+		 * @description Execute command response message
+		 * @since 1.1.0
+		 */
+		executeResponse?: string;
 	}
 	/**
 	 * @description Meter scan callback
