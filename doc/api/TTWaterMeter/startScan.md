@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function startScan(callbacks: TTWaterMeter.Scan): Promise<TTMeterError>
+    function startScan(callbacks: TTWaterMeter.Scan): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

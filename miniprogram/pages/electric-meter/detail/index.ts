@@ -15,11 +15,15 @@ Page({
         errCode: "", // 最后一次操作错误码
         errMsg: "", // 错误提示信息
 
-        showInput: false, // 1 -设置功率阈值, 2 -设置电量
+        showInput: false, // 1 -设置功率阈值, 2 -租客充值, 3 -设置剩余电量, 4 -管理员充值, 5 -配置APN, 6 -配置远程服务器
         maxPower: "", // 最大功率阈值
         remainderKwh: "", // 剩余电量
         executeToken: "", // 租客充值token
         rechargeKwh: "", // 管理员充值电量
+        deviceInfo: null, // 电表设备信息(1.3.0)
+        apn: "", // APN接入点名称
+        serverAddress: "", // 远程服务器地址
+        portNumber: "", // 远程服务器端口
     },
     onLoad(option) {
         const ID = Number(option?.id || "0") || 0;
@@ -94,6 +98,24 @@ Page({
             } else {
                 return true;
             }
+        } else if (target == "CONFIG_APN") {
+            if (!!!value?.apn) {
+                HttpHandler.showErrorMsg("请输入APN接入点名称");
+                return false;
+            } else {
+                return true;
+            }
+        } else if (target == "CONFIG_SERVER") {
+            const portNumber = Number(value?.portNumber || 0);
+            if (!!!value?.serverAddress) {
+                HttpHandler.showErrorMsg("请输入远程服务器地址");
+                return false;
+            } else if (!/^[1-9]{1}[0-9]{0,4}$/.test(String(value?.portNumber || "")) || portNumber > 65535) {
+                HttpHandler.showErrorMsg("请输入正确的远程服务器端口(1-65535)");
+                return false;
+            } else {
+                return true;
+            }
         } else {
             HttpHandler.showErrorMsg("无效操作");
             return false;
@@ -108,6 +130,8 @@ Page({
     toSetMaxPower() { this.debounce(this._toSetMaxPower, 300) },
     toSetElecMeter() { this.debounce(this._toSetElecMeter, 300) },
     toChargeMeter() { this.debounce(this._toChargeMeter, 300) },
+    toConfigApn() { this.debounce(this._toConfigApn, 300) },
+    toConfigServer() { this.debounce(this._toConfigServer, 300) },
     handleSubmit(event) { this.debounce(this._handleSubmit, 300, event) },
     /** 表单提交 */
     _handleSubmit(event) {
@@ -119,6 +143,8 @@ Page({
         case "TENANT_RECHARGE": this.chargeElecMeter(String(value?.executeToken)); break;
         case "REMAINDER_KWH": this.setElecMeter(Number(value?.remainderKwh)); break;
         case "RECHARGE_KWH": this.chargeElecMeter(Number(value?.rechargeKwh)); break;
+        case "CONFIG_APN": this.configMeterApn(String(value?.apn)); break;
+        case "CONFIG_SERVER": this.configMeterServer(String(value?.serverAddress), Number(value?.portNumber)); break;
         }
     },
     /** 用户退出登录 */
@@ -566,4 +592,143 @@ Page({
             wx.hideLoading({});
 		}
 	},
+    /** 维持蓝牙智能电表连接(1.2.0) */
+    async keepConnection() {
+        const meterInfo = this.data?.meterInfo as IElectricMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTElectricMeter = plugin.TTElectricMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: "正在维持电表蓝牙连接" });
+		try {
+			const connRes = await TTElectricMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 维持蓝牙智能电表连接(1.2.0)
+			 * @description 设备长时间无操作将自动断开连接，批量操作间隔较长时可调用该接口维持当前连接
+			 */
+			const res = await TTElectricMeter.keepConnection();
+			console.log("维持蓝牙电表连接完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `维持蓝牙电表连接结束：${res?.errMsg}` });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 重置蓝牙智能电表(1.3.0) */
+    async resetMeter() {
+        const meterInfo = this.data?.meterInfo as IElectricMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTElectricMeter = plugin.TTElectricMeter;
+        const modalRes = await wx.showModal({ title: "重置电表", content: "重置将影响电表内的数据，请谨慎操作！是否继续？" });
+        if (!modalRes?.confirm) return;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: "正在重置蓝牙电表" });
+		try {
+			const connRes = await TTElectricMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 重置蓝牙智能电表(1.3.0)
+			 * @description 重置将影响电表内的数据，请谨慎操作
+			 */
+			const res = await TTElectricMeter.reset({});
+			console.log("重置蓝牙电表完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `重置蓝牙电表结束：${res?.errMsg}` });
+            this.handleReload();
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 获取电表设备信息(1.3.0) */
+    async getDeviceInfo() {
+        const meterInfo = this.data?.meterInfo as IElectricMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTElectricMeter = plugin.TTElectricMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: "正在查询电表设备信息" });
+		try {
+			const connRes = await TTElectricMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 获取电表设备信息(1.3.0)
+			 * @description 该接口仅4G版本智能电表支持，设备信息通过返回值data域返回
+			 */
+			const res = await TTElectricMeter.getDeviceInfo({});
+			console.log("查询电表设备信息完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `查询电表设备信息结束：${res?.errMsg}`, deviceInfo: res?.data || null });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 配置电表APN */
+    _toConfigApn() {
+        this.setData({ showInput: 5, apn: "" });
+    },
+    /** 配置电表4G模块APN(1.3.0) */
+    async configMeterApn(apn: string) {
+        const meterInfo = this.data?.meterInfo as IElectricMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTElectricMeter = plugin.TTElectricMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: `正在配置电表APN: ${apn}` });
+		try {
+			const connRes = await TTElectricMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 配置电表4G模块APN(1.3.0)
+			 * @description 该接口仅4G版本智能电表支持
+			 */
+			const res = await TTElectricMeter.configApn({ apn: apn });
+			console.log("配置电表APN完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `配置电表APN结束：${res?.errMsg}`, showInput: false });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 配置电表远程服务器地址 */
+    _toConfigServer() {
+        this.setData({ showInput: 6, serverAddress: "", portNumber: "" });
+    },
+    /** 配置电表远程服务器地址(1.3.0) */
+    async configMeterServer(serverAddress: string, portNumber: number) {
+        const meterInfo = this.data?.meterInfo as IElectricMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTElectricMeter = plugin.TTElectricMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: `正在配置电表远程服务器：${serverAddress}:${portNumber}` });
+		try {
+			const connRes = await TTElectricMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 配置电表4G模块远程上报的服务器地址及端口(1.3.0)
+			 * @description 该接口仅4G版本智能电表支持
+			 */
+			const res = await TTElectricMeter.configServer({
+				serverAddress: serverAddress, // 远程服务器地址(必填)
+				portNumber: portNumber // 远程服务器端口(必填)
+			});
+			console.log("配置电表远程服务器完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `配置电表远程服务器结束：${res?.errMsg}`, showInput: false });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
 })

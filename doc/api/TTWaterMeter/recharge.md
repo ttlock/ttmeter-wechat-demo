@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function recharge(option: TTWaterMeter.Recharge): Promise<TTMeterError>
+    function recharge(option: TTWaterMeter.Recharge): Promise<TTMeterError>;
 ```
 
 ### 功能描述   
@@ -21,8 +21,9 @@
 ##### option参数说明 TTWaterMeter.Recharge 
  |PARAMS            |TYPE       |REQUIRED      |DESCRIPTION|
  |------------------|-----------|--------------|-----------|
- |rechargeAmount    |number     |Y             |充值金额|
- |rechargeM3        |number     |Y             |充值水量|
+ |rechargeAmount    |number     |N             |充值金额（与rechargeM3至少传入一项）|
+ |rechargeM3        |number     |N             |充值水量，单位：t（与rechargeAmount至少传入一项）|
+ |executeToken      |string     |N             |充值token|
  |(自定义属性)       |any        |N             |自定义扩展属性|
 
 ### 返回值

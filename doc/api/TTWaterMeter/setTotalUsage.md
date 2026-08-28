@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function setTotalUsage(option: TTWaterMeter.SetTotalUsage): Promise<TTMeterError>
+    function setTotalUsage(option: TTWaterMeter.SetTotalUsage): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

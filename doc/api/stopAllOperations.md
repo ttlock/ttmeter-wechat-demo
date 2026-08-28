@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function finishOperations(): Promise<TTMeterError>;
+    function stopAllOperations(): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

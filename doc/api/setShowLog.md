@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function setShowLog(open: boolean, callback: (...args: any | void) => void): void
+    function setShowLog(open: boolean, callback: (...args: any | void) => void): void;
 ```
 
 ### 功能描述   

@@ -21,8 +21,9 @@
 ##### option参数说明 TTElectricMeter.Recharge 
  |PARAMS            |TYPE       |REQUIRED      |DESCRIPTION|
  |------------------|-----------|--------------|-----------|
- |rechargeAmount    |number     |Y             |充值金额|
- |rechargeKwh       |number     |Y             |充值电量|
+ |rechargeAmount    |number     |N             |充值金额（与rechargeKwh至少传入一项）|
+ |rechargeKwh       |number     |N             |充值电量，单位：kWh（与rechargeAmount至少传入一项）|
+ |executeToken      |string     |N             |充值token|
  |(自定义属性)       |any        |N             |自定义扩展属性|
 
 ### 返回值

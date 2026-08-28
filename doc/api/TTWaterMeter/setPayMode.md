@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function setPayMode(option: TTWaterMeter.SetPayMode): Promise<TTMeterError>
+    function setPayMode(option: TTWaterMeter.SetPayMode): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

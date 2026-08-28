@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function setWaterOnOff(option: TTWaterMeter.SetWaterOnOff): Promise<TTMeterError>
+    function setWaterOnOff(option: TTWaterMeter.SetWaterOnOff): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

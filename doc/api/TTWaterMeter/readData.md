@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function readData(option?: TTWaterMeter.ReadData): Promise<TTMeterError>
+    function readData(option?: TTWaterMeter.ReadData): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

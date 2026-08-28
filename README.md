@@ -1,4 +1,4 @@
-# 通通水电表小程序插件接口说明文档（version: 1.1.0)  
+# 通通水电表小程序插件接口说明文档（version: 1.3.0)  
 
 ## 说明
  **1.0.0开始支持外部对接**
@@ -10,7 +10,7 @@
 
 
  APPID: **wxeb890b790ae1ab8f**   
- 当前版本：**1.1.0**  
+ 当前版本：**1.3.0**  
  开放平台最低可用版本：**1.0.0**  
  微信版本号：**8.0.5**以上  
  微信基础库版本号：**3.5.7**以上  
@@ -69,10 +69,10 @@
  2. [配置远程服务器请求信息: setClientParam](./doc/api/setClientParam.md)  
  3. [初始化蓝牙接口：init](./doc/api/init.md)  
  4. [停止蓝牙扫描：stopScan](./doc/api/stopScan.md)  
- 6. [批量操作结束，断开设备连接并释放资源：finishOperations](./doc/api/finishOperations.md)  
- 7. [停止所有蓝牙操作：stopAllOperations](./doc/api/stopAllOperations.md)  
- 8. [蓝牙智能电表相关接口：TTElectricMeter](#蓝牙智能电表相关接口)  
- 9. [蓝牙智能水表相关接口：TTWaterMeter](#蓝牙智能水表相关接口)  
+ 5. [批量操作结束，断开设备连接并释放资源：finishOperations](./doc/api/finishOperations.md)  
+ 6. [停止所有蓝牙操作：stopAllOperations](./doc/api/stopAllOperations.md)  
+ 7. [蓝牙智能电表相关接口：TTElectricMeter](#蓝牙智能电表相关接口)  
+ 8. [蓝牙智能水表相关接口：TTWaterMeter](#蓝牙智能水表相关接口)  
 
 ### 蓝牙智能电表相关接口
 ```
@@ -80,30 +80,40 @@
     function startScan(callbacks: TTElectricMeter.Scan): Promise<TTMeterError> // since: 0.0.3
     function locate(mac: string): Promise<TTMeterError> // since: 0.0.3
     function connect(MAC: string): Promise<TTMeterError> // since: 0.0.3
+    function keepConnection(): Promise<TTMeterError> // since: 1.2.0
     function add(option: TTElectricMeter.Add): Promise<TTMeterError> // since: 0.0.3
-    function delete(option: TTElectricMeter.Delete): Promise<TTMeterError> // since: 0.0.3
+    function delete(option?: TTElectricMeter.Delete): Promise<TTMeterError> // since: 0.0.3
     function setPowerOnOff(option: TTElectricMeter.SetPowerOnOff): Promise<TTMeterError> // since: 0.0.3
     function setRemainingElectricity(option: TTElectricMeter.SetRemainingElectricity): Promise<TTMeterError> // since: 0.0.3
     function clearRemainingElectricity(option: TTElectricMeter.ClearRemainingElectricity): Promise<TTMeterError> // since: 0.0.3
     function readData(option?: TTElectricMeter.ReadData): Promise<TTMeterError> // since: 0.0.3
-    function setPayMode(option?: TTElectricMeter.SetPayMode): Promise<TTMeterError> // since: 0.0.3
+    function setPayMode(option: TTElectricMeter.SetPayMode): Promise<TTMeterError> // since: 0.0.3
     function recharge(option: TTElectricMeter.Recharge): Promise<TTMeterError> // since: 0.0.3
     function setMaxPower(option: TTElectricMeter.SetMaxPower): Promise<TTMeterError> // since: 0.0.3
-    function getFeatureValue(option: TTElectricMeter.GetFeatureValue): Promise<TTMeterError> // since: 0.0.3
+    function getFeatureValue(option: TTElectricMeter.GetFeatureValue): Promise<TTMeterError<TTMeter.FeatureValueData>> // since: 0.0.3
+    function reset(option: TTElectricMeter.Reset): Promise<TTMeterError> // since: 1.3.0
+    function getDeviceInfo(option: TTElectricMeter.GetDeviceInfo): Promise<TTMeterError<TTMeter.DeviceInfoData>> // since: 1.3.0
+    function configApn(option: TTElectricMeter.ConfigAPN): Promise<TTMeterError> // since: 1.3.0
+    function configServer(option: TTElectricMeter.ConfigServer): Promise<TTMeterError> // since: 1.3.0
 ```  
  1. [扫描附近的蓝牙电表：startScan](./doc/api/TTElectricMeter/startScan.md)  
  2. [扫描定位蓝牙电表，确定电表是否在附近：locate](./doc/api/TTElectricMeter/locate.md)  
  3. [连接蓝牙智能电表：connect](./doc/api/TTElectricMeter/connect.md)  
- 4. [添加蓝牙智能电表：add](./doc/api/TTElectricMeter/add.md)  
- 5. [删除蓝牙智能电表：delete](./doc/api/TTElectricMeter/delete.md)  
- 6. [设置智能电表通断电状态：setPowerOnOff](./doc/api/TTElectricMeter/setPowerOnOff.md)  
- 7. [设置智能电表剩余电量：setRemainingElectricity](./doc/api/TTElectricMeter/setRemainingElectricity.md)  
- 8. [清空智能电表剩余电量：clearRemainingElectricity](./doc/api/TTElectricMeter/clearRemainingElectricity.md)  
- 9. [智能电表抄表：readData](./doc/api/TTElectricMeter/readData.md)  
- 10. [设置智能电表付费模式：setPayMode](./doc/api/TTElectricMeter/setPayMode.md)  
- 11. [智能电表充值：recharge](./doc/api/TTElectricMeter/recharge.md)  
- 12. [设置电表最大功率：setMaxPower](./doc/api/TTElectricMeter/setMaxPower.md)  
- 13. [获取智能电表特征值：getFeatureValue](./doc/api/TTElectricMeter/getFeatureValue.md)  
+ 4. [维持蓝牙智能电表连接：keepConnection](./doc/api/TTElectricMeter/keepConnection.md)  
+ 5. [添加蓝牙智能电表：add](./doc/api/TTElectricMeter/add.md)  
+ 6. [删除蓝牙智能电表：delete](./doc/api/TTElectricMeter/delete.md)  
+ 7. [设置智能电表通断电状态：setPowerOnOff](./doc/api/TTElectricMeter/setPowerOnOff.md)  
+ 8. [设置智能电表剩余电量：setRemainingElectricity](./doc/api/TTElectricMeter/setRemainingElectricity.md)  
+ 9. [清空智能电表剩余电量：clearRemainingElectricity](./doc/api/TTElectricMeter/clearRemainingElectricity.md)  
+ 10. [智能电表抄表：readData](./doc/api/TTElectricMeter/readData.md)  
+ 11. [设置智能电表付费模式：setPayMode](./doc/api/TTElectricMeter/setPayMode.md)  
+ 12. [智能电表充值：recharge](./doc/api/TTElectricMeter/recharge.md)  
+ 13. [设置电表最大功率：setMaxPower](./doc/api/TTElectricMeter/setMaxPower.md)  
+ 14. [获取智能电表特征值：getFeatureValue](./doc/api/TTElectricMeter/getFeatureValue.md)  
+ 15. [重置智能电表：reset](./doc/api/TTElectricMeter/reset.md)  
+ 16. [获取智能电表设备信息：getDeviceInfo](./doc/api/TTElectricMeter/getDeviceInfo.md)  
+ 17. [配置智能电表APN：configApn](./doc/api/TTElectricMeter/configApn.md)  
+ 18. [配置智能电表远程服务器地址：configServer](./doc/api/TTElectricMeter/configServer.md)  
 
  ### 蓝牙智能水表相关接口
 ```
@@ -111,27 +121,37 @@
     function startScan(callbacks: TTWaterMeter.Scan): Promise<TTMeterError> // since: 0.0.4
     function locate(mac: string): Promise<TTMeterError> // since: 0.0.4
     function connect(MAC: string): Promise<TTMeterError> // since: 0.0.4
+    function keepConnection(): Promise<TTMeterError> // since: 1.2.0
     function add(option: TTWaterMeter.Add): Promise<TTMeterError> // since: 0.0.4
     function delete(option: TTWaterMeter.Delete): Promise<TTMeterError> // since: 0.0.4
     function setWaterOnOff(option: TTWaterMeter.SetWaterOnOff): Promise<TTMeterError> // since: 0.0.4
     function setRemainingWater(option: TTWaterMeter.SetRemainingWater): Promise<TTMeterError> // since: 0.0.4
     function clearRemainingWater(option: TTWaterMeter.ClearRemainingWater): Promise<TTMeterError> // since: 0.0.4
     function readData(option?: TTWaterMeter.ReadData): Promise<TTMeterError> // since: 0.0.4
-    function setPayMode(option?: TTWaterMeter.SetPayMode): Promise<TTMeterError> // since: 0.0.4
+    function setPayMode(option: TTWaterMeter.SetPayMode): Promise<TTMeterError> // since: 0.0.4
     function recharge(option: TTWaterMeter.Recharge): Promise<TTMeterError> // since: 0.0.4
     function setTotalUsage(option: TTWaterMeter.SetTotalUsage): Promise<TTMeterError> // since: 0.0.4
-    function getFeatureValue(option: TTWaterMeter.GetFeatureValue): Promise<TTMeterError> // since: 0.0.4
+    function getFeatureValue(option: TTWaterMeter.GetFeatureValue): Promise<TTMeterError<TTMeter.FeatureValueData>> // since: 0.0.4
+    function reset(option: TTWaterMeter.Reset): Promise<TTMeterError> // since: 1.3.0
+    function getDeviceInfo(option: TTWaterMeter.GetDeviceInfo): Promise<TTMeterError<TTMeter.DeviceInfoData>> // since: 1.3.0
+    function configApn(option: TTWaterMeter.ConfigAPN): Promise<TTMeterError> // since: 1.3.0
+    function configServer(option: TTWaterMeter.ConfigServer): Promise<TTMeterError> // since: 1.3.0
 ```  
  1. [扫描附近的蓝牙水表：startScan](./doc/api/TTWaterMeter/startScan.md)  
- 2. [扫描定位蓝牙水表，确定电表是否在附近：locate](./doc/api/TTWaterMeter/locate.md)  
+ 2. [扫描定位蓝牙水表，确定水表是否在附近：locate](./doc/api/TTWaterMeter/locate.md)  
  3. [连接蓝牙智能水表：connect](./doc/api/TTWaterMeter/connect.md)  
- 4. [添加蓝牙智能水表：add](./doc/api/TTWaterMeter/add.md)  
- 5. [删除蓝牙智能水表：delete](./doc/api/TTWaterMeter/delete.md)  
- 6. [设置智能电水通断水状态：setWaterOnOff](./doc/api/TTWaterMeter/setWaterOnOff.md)  
- 7. [设置智能水表剩余水量：setRemainingWater](./doc/api/TTWaterMeter/setRemainingWater.md)  
- 8. [清空智能水表剩余水量：clearRemainingWater](./doc/api/TTWaterMeter/clearRemainingWater.md)  
- 9. [智能水表抄表：readData](./doc/api/TTWaterMeter/readData.md)  
- 10. [设置智能水表付费模式：setPayMode](./doc/api/TTWaterMeter/setPayMode.md)  
- 11. [智能水表充值：recharge](./doc/api/TTWaterMeter/recharge.md)  
- 12. [设置水表底数：setTotalUsage](./doc/api/TTWaterMeter/setTotalUsage.md)  
- 13. [获取智能水表特征值：getFeatureValue](./doc/api/TTWaterMeter/getFeatureValue.md)  
+ 4. [维持蓝牙智能水表连接：keepConnection](./doc/api/TTWaterMeter/keepConnection.md)  
+ 5. [添加蓝牙智能水表：add](./doc/api/TTWaterMeter/add.md)  
+ 6. [删除蓝牙智能水表：delete](./doc/api/TTWaterMeter/delete.md)  
+ 7. [设置智能水表通断水状态：setWaterOnOff](./doc/api/TTWaterMeter/setWaterOnOff.md)  
+ 8. [设置智能水表剩余水量：setRemainingWater](./doc/api/TTWaterMeter/setRemainingWater.md)  
+ 9. [清空智能水表剩余水量：clearRemainingWater](./doc/api/TTWaterMeter/clearRemainingWater.md)  
+ 10. [智能水表抄表：readData](./doc/api/TTWaterMeter/readData.md)  
+ 11. [设置智能水表付费模式：setPayMode](./doc/api/TTWaterMeter/setPayMode.md)  
+ 12. [智能水表充值：recharge](./doc/api/TTWaterMeter/recharge.md)  
+ 13. [设置水表底数：setTotalUsage](./doc/api/TTWaterMeter/setTotalUsage.md)  
+ 14. [获取智能水表特征值：getFeatureValue](./doc/api/TTWaterMeter/getFeatureValue.md)  
+ 15. [重置智能水表：reset](./doc/api/TTWaterMeter/reset.md)  
+ 16. [获取智能水表设备信息：getDeviceInfo](./doc/api/TTWaterMeter/getDeviceInfo.md)  
+ 17. [配置智能水表APN：configApn](./doc/api/TTWaterMeter/configApn.md)  
+ 18. [配置智能水表远程服务器地址：configServer](./doc/api/TTWaterMeter/configServer.md)  

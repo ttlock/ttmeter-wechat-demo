@@ -15,11 +15,15 @@ Page({
         errCode: "", // 最后一次操作错误码
         errMsg: "", // 错误提示信息
 
-        showInput: false, // 1 -设置总用水量
+        showInput: false, // 1 -设置总用水量, 2 -租客充值, 3 -设置剩余水量, 4 -管理员充值, 5 -配置APN, 6 -配置远程服务器
         totalM3: "", // 总用水量
         remainderM3: "", // 剩余水量
         executeToken: "", // 租客充值token
         rechargeM3: "", // 管理员充值水量
+        deviceInfo: null, // 水表设备信息(1.3.0)
+        apn: "", // APN接入点名称
+        serverAddress: "", // 远程服务器地址
+        portNumber: "", // 远程服务器端口
     },
     onLoad(option) {
         const ID = Number(option?.id || "0") || 0;
@@ -79,6 +83,24 @@ Page({
             } else {
                 return true;
             }
+        } else if (target == "CONFIG_APN") {
+            if (!!!value?.apn) {
+                HttpHandler.showErrorMsg("请输入APN接入点名称");
+                return false;
+            } else {
+                return true;
+            }
+        } else if (target == "CONFIG_SERVER") {
+            const portNumber = Number(value?.portNumber || 0);
+            if (!!!value?.serverAddress) {
+                HttpHandler.showErrorMsg("请输入远程服务器地址");
+                return false;
+            } else if (!/^[1-9]{1}[0-9]{0,4}$/.test(String(value?.portNumber || "")) || portNumber > 65535) {
+                HttpHandler.showErrorMsg("请输入正确的远程服务器端口(1-65535)");
+                return false;
+            } else {
+                return true;
+            }
         } else {
             HttpHandler.showErrorMsg("无效操作");
             return false;
@@ -93,6 +115,8 @@ Page({
     toSetTotalUsage() { this.debounce(this._toSetTotalUsage, 300) },
     toSetWaterMeter() { this.debounce(this._toSetWaterMeter, 300) },
     toChargeMeter() { this.debounce(this._toChargeMeter, 300) },
+    toConfigApn() { this.debounce(this._toConfigApn, 300) },
+    toConfigServer() { this.debounce(this._toConfigServer, 300) },
     handleSubmit(event) { this.debounce(this._handleSubmit, 300, event) },
     /** 表单提交 */
     _handleSubmit(event) {
@@ -104,6 +128,8 @@ Page({
         case "TENANT_RECHARGE": this.chargeWaterMeter(String(value?.executeToken)); break;
         case "REMAINDER_M3": this.setWaterMeter(Number(value?.remainderM3)); break;
         case "RECHARGE_M3": this.chargeWaterMeter(Number(value?.rechargeM3)); break;
+        case "CONFIG_APN": this.configMeterApn(String(value?.apn)); break;
+        case "CONFIG_SERVER": this.configMeterServer(String(value?.serverAddress), Number(value?.portNumber)); break;
         }
     },
     /** 用户退出登录 */
@@ -553,4 +579,143 @@ Page({
             wx.hideLoading({});
 		}
 	},
+    /** 维持蓝牙智能水表连接(1.2.0) */
+    async keepConnection() {
+        const meterInfo = this.data?.meterInfo as IWaterMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTWaterMeter = plugin.TTWaterMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: "正在维持水表蓝牙连接" });
+		try {
+			const connRes = await TTWaterMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 维持蓝牙智能水表连接(1.2.0)
+			 * @description 设备长时间无操作将自动断开连接，批量操作间隔较长时可调用该接口维持当前连接
+			 */
+			const res = await TTWaterMeter.keepConnection();
+			console.log("维持蓝牙水表连接完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `维持蓝牙水表连接结束：${res?.errMsg}` });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 重置蓝牙智能水表(1.3.0) */
+    async resetMeter() {
+        const meterInfo = this.data?.meterInfo as IWaterMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTWaterMeter = plugin.TTWaterMeter;
+        const modalRes = await wx.showModal({ title: "重置水表", content: "重置将影响水表内的数据，请谨慎操作！是否继续？" });
+        if (!modalRes?.confirm) return;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: "正在重置蓝牙水表" });
+		try {
+			const connRes = await TTWaterMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 重置蓝牙智能水表(1.3.0)
+			 * @description 重置将影响水表内的数据，请谨慎操作
+			 */
+			const res = await TTWaterMeter.reset({});
+			console.log("重置蓝牙水表完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `重置蓝牙水表结束：${res?.errMsg}` });
+            this.handleReload();
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 获取水表设备信息(1.3.0) */
+    async getDeviceInfo() {
+        const meterInfo = this.data?.meterInfo as IWaterMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTWaterMeter = plugin.TTWaterMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: "正在查询水表设备信息" });
+		try {
+			const connRes = await TTWaterMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 获取水表设备信息(1.3.0)
+			 * @description 该接口仅4G版本智能水表支持，设备信息通过返回值data域返回
+			 */
+			const res = await TTWaterMeter.getDeviceInfo({});
+			console.log("查询水表设备信息完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `查询水表设备信息结束：${res?.errMsg}`, deviceInfo: res?.data || null });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 配置水表APN */
+    _toConfigApn() {
+        this.setData({ showInput: 5, apn: "" });
+    },
+    /** 配置水表4G模块APN(1.3.0) */
+    async configMeterApn(apn: string) {
+        const meterInfo = this.data?.meterInfo as IWaterMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTWaterMeter = plugin.TTWaterMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: `正在配置水表APN: ${apn}` });
+		try {
+			const connRes = await TTWaterMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 配置水表4G模块APN(1.3.0)
+			 * @description 该接口仅4G版本智能水表支持
+			 */
+			const res = await TTWaterMeter.configApn({ apn: apn });
+			console.log("配置水表APN完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `配置水表APN结束：${res?.errMsg}`, showInput: false });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
+    /** 配置水表远程服务器地址 */
+    _toConfigServer() {
+        this.setData({ showInput: 6, serverAddress: "", portNumber: "" });
+    },
+    /** 配置水表远程服务器地址(1.3.0) */
+    async configMeterServer(serverAddress: string, portNumber: number) {
+        const meterInfo = this.data?.meterInfo as IWaterMeter.Result.Detail;
+        const MAC = meterInfo?.mac;
+        const plugin = requirePlugin("ttmeter-plugin") as TTMeterPlugin; // 引入插件
+        const TTWaterMeter = plugin.TTWaterMeter;
+		wx.showLoading({ title: "Loading..." });
+		this.setData({ errMsg: `正在配置水表远程服务器：${serverAddress}:${portNumber}` });
+		try {
+			const connRes = await TTWaterMeter.connect(MAC);
+			if (connRes?.errCode != 0) throw(connRes);
+			/**
+			 * @TTMeterPlugin 配置水表4G模块远程上报的服务器地址及端口(1.3.0)
+			 * @description 该接口仅4G版本智能水表支持
+			 */
+			const res = await TTWaterMeter.configServer({
+				serverAddress: serverAddress, // 远程服务器地址(必填)
+				portNumber: portNumber // 远程服务器端口(必填)
+			});
+			console.log("配置水表远程服务器完成", res);
+            this.setData({ errCode: res?.errCode, errMsg: `配置水表远程服务器结束：${res?.errMsg}`, showInput: false });
+	    } catch(err) {
+			this.setData({ errCode: err?.errCode, errMsg: `操作结束：${err?.errMsg}` });
+		} finally {
+            await plugin.finishOperations();
+            wx.hideLoading({});
+		}
+    },
 })

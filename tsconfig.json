@@ -1,24 +1,26 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "target": "ES5",
+        "target": "ES2020",
         "module": "ESNext",
+        "moduleResolution": "bundler",
         "lib": [
             "ESNext",
             "dom",
-            "dom.iterable",
-            "scripthost"
+            "dom.iterable"
         ],
         "allowJs": true,
         "jsx": "preserve",
         "outDir": "./dist",
+        "rootDir": "./miniprogram",
         "importHelpers": true,
         "strict": false,
-        "moduleResolution": "node",
-        "baseUrl": "./",
-        "paths": {},
-        "typeRoots": [],
-        "types": ["./doc/typings"],
+        "typeRoots": [
+            ".",
+            "./node_modules",
+            "./node_modules/@types"
+        ],
+        "types": ["typings", "miniprogram-api-typings"],
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "skipLibCheck": true,

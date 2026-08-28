@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function clearRemainingWater(option?: TTWaterMeter.ClearRemainingWater): Promise<TTMeterError>
+    function clearRemainingWater(option?: TTWaterMeter.ClearRemainingWater): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function setClientParam(clientInfo: TTMeter.ClientInfo): Promise<TTMeterError>
+    function setClientParam(clientInfo: TTMeter.ClientInfo): boolean;
 ```
 
 ### 功能描述   
@@ -21,13 +21,13 @@
  |--------------|-----------|--------------|-----------|
  |url           |string     |Y             |服务器指令接口地址 |
  |clientId      |string     |Y             |应用对应的clientId, 请从开放平台获取|
- |clientSecret  |string     |Y             |应用对应的clientSecret, 请从开放平台获取|
- |packageName   |string     |Y             |应用包名, 请从开放平台获取|  
+ |clientSecret  |string     |N             |应用对应的clientSecret, 请从开放平台获取|
+ |packageName   |string     |N             |应用包名, 请从开放平台获取|
  |accessToken   |string     |N             |用户登录令牌(若接口需要登录时则必传)|
  |uid           |number     |N             |用户登录ID(若接口需要登录时则必传)|  
 
 ### 返回值
- Promise<[TTMeterError](../错误码说明.md)>  
+ boolean（true -配置成功，false -配置失败）  
 
 ## 相关链接  
  1. [常规调用方式说明](../../README.md)  

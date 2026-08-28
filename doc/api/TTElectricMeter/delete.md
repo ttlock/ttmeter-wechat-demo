@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function delete(option: TTElectricMeter.Delete): Promise<TTMeterError>;
+    function delete(option?: TTElectricMeter.Delete): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

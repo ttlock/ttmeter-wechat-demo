@@ -2,7 +2,7 @@
 
 ## 方法
 ```
-    function init(option: TTMeter.Init): Promise<TTMeterError>
+    function init(option: TTMeter.Init): Promise<TTMeterError>;
 ```
 
 ### 功能描述   

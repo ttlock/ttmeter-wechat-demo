@@ -12,6 +12,7 @@ export const E = {
 	"DUPLICATE_ORDER": 6, // [智能电表][智能水表]Duplicate order number.(0.0.1)
 	"UNDEFINED_ERROR": 19, // [智能电表][智能水表]Failed. Undefined error.(0.0.1)
 	"INVALID_COMMAND": 27, // [智能电表][智能水表]Invalid command.(0.0.1)
+    "BT_DISCONNECT": 10003, // [蓝牙][设备断连]设备已断开连接(0.0.4)
 	"WX_VERSION_ERROR": 10101, // [设备平台][微信版本]微信版本过低，最低版本号：${requsetStatus}(0.0.4)
 	"SDK_VERSION_ERROR": 10102, // [设备平台][微信SDK]微信基础库版本过低，最低版本号：${requsetStatus}(0.0.4) -10038
 	"NETWORK_ERROR": 10301, // [网络请求]网络异常(0.0.4)
@@ -41,7 +42,7 @@ export const E = {
 	"BT_ALREAY_CONNECTED": 10601, // [蓝牙连接]设备已连接上，无需重连(0.0.4)
 	"BT_ERROR_CONNECTED_DEVICE": 10602, // [蓝牙连接]目标设备与当前已连接的设备不符(0.0.4)
 	"BT_NOT_CONNECTED": 10603, // [蓝牙连接]设备未连接，请先连接设备(0.0.4) - 502
-    "PLATFORM_ERROR": 11002, // [设备平台]设备平台不支持蓝牙调试(0.0.4)
+    "PLATFORM_ERROR": 11002, // [设备平台]设备平台不支持蓝牙操作(0.0.4)
     "PARAMS_ERROR": 11003, // [参数]参数错误(0.0.4)
     "API_BUSY": 11013, // [蓝牙][状态控制]蓝牙正在操作中，请稍候再试(0.0.4)
 	"BLE_OPEN_ADAPTER_FAILED": 13001, // [接口防错]启用蓝牙适配器失败(0.0.4) - 10030
@@ -72,6 +73,7 @@ const M = (requsetStatus?: number | string): Record<number, string> => ({
 	[E.DUPLICATE_ORDER]: "Duplicate order number.", // [智能电表][智能水表]
 	[E.UNDEFINED_ERROR]: "Failed. Undefined error.", // [智能电表][智能水表]
 	[E.INVALID_COMMAND]: "Invalid command.", // [智能电表][智能水表]
+	[E.BT_DISCONNECT]: "设备已断开连接", // [智能电表][智能水表]
 	[E.WX_VERSION_ERROR]: `微信版本过低，最低版本号：${requsetStatus}`, // [设备平台][微信版本]
 	[E.SDK_VERSION_ERROR]: `微信基础库版本过低，最低版本号：${requsetStatus}`, // [设备平台][微信SDK]
 	[E.NETWORK_ERROR]: "网络异常", // [网络请求]
@@ -101,7 +103,7 @@ const M = (requsetStatus?: number | string): Record<number, string> => ({
 	[E.BT_ALREAY_CONNECTED]: "设备已连接上，无需重连", // [蓝牙连接]
 	[E.BT_ERROR_CONNECTED_DEVICE]: "目标设备与当前已连接的设备不符", // [蓝牙连接]目标设备与当前已连接的设备不符
 	[E.BT_NOT_CONNECTED]: "设备未连接，请先连接设备", // [蓝牙连接]
-	[E.PLATFORM_ERROR]: "设备平台不支持蓝牙调试", // [设备平台]
+	[E.PLATFORM_ERROR]: "设备平台不支持蓝牙操作", // [设备平台]
 	[E.PARAMS_ERROR]: "Params error.", // [参数]
 	[E.API_BUSY]: "蓝牙正在操作中，请稍候再试", // [蓝牙][状态控制]
 	[E.BLE_OPEN_ADAPTER_FAILED]: "启用蓝牙适配器失败", // [接口防错]
@@ -120,3 +122,4 @@ const M = (requsetStatus?: number | string): Record<number, string> => ({
 	[E.GET_NETWORK_TYPE_FAILED]: "查询网络状态失败", // [接口防错]查询网络状态失败
 	[E.FAIL]: "Operation failed.", // [防错错误码]
 })
+
